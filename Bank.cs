@@ -10,6 +10,7 @@ namespace Bank
         private string address;
         public List<BankProduct> listOfBankProducts = new List<BankProduct>();
         private decimal availableMoney;
+        private const int reservePercentage = 10;
 
         private static Bank instance = null;
         private Bank() { }
@@ -25,6 +26,14 @@ namespace Bank
             }
         }
 
+        public void SetBankAvailableMoney(decimal availableMoney)
+        {
+            this.availableMoney = availableMoney;
+        }
+        public decimal GetBankAvailableMoney()
+        {
+            return availableMoney;
+        }
         public Deposit ChooseDepositeType(decimal moneyToDeposit)
         {
             if (moneyToDeposit > 5000)
@@ -42,7 +51,50 @@ namespace Bank
             Deposit deposite = typeOfDeposit;
             deposite.SetAvailableMoney(moneyToDeposit);
             listOfBankProducts.Add(deposite);
-           return deposite;
+            availableMoney += moneyToDeposit;
+            return deposite;
         }
+
+        public decimal CheckBankReserve()
+        {
+            decimal availableMoney = GetBankAvailableMoney();
+            decimal reserve = availableMoney * reservePercentage / 100;
+            return reserve;
+        }
+
+
+        public bool ConfirmCredit(Client client, Credit credit)
+        {
+            bool confirmed = false;
+            bool lessThanFiftyPercentOfTheSalary = client.CheckAllPayments();
+
+            if(lessThanFiftyPercentOfTheSalary)
+            {
+                if(CheckAvailability(credit.GetAvailableMoney() * -1))
+                {
+                    confirmed = true;
+                    client.SetAvailableMoney(client.GetAvailableMoney() + (credit.GetAvailableMoney() * -1));
+                    SetBankAvailableMoney(GetBankAvailableMoney() - (credit.GetAvailableMoney() * -1));
+                }
+
+            }
+
+            return confirmed;
+        }
+
+        private bool CheckAvailability(decimal amountOfMoneyForCredit)
+        {
+            bool enoughAvailableMoney = false;
+            decimal reserve = CheckBankReserve();
+            decimal moneyInBankAfterCredit = GetBankAvailableMoney() - amountOfMoneyForCredit;
+
+            if(moneyInBankAfterCredit > reserve)
+            {
+                enoughAvailableMoney = true;
+            }
+
+            return enoughAvailableMoney;
+        }
+
     }
 }

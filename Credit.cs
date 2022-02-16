@@ -6,6 +6,16 @@ namespace Bank
 {
     public abstract class Credit : BankProduct
     {
-        protected decimal monthlyPayment;
+        private decimal monthlyPayment;
+
+        public void SetMonthlyPayment(decimal monthlyPayment)
+        {
+            this.monthlyPayment = monthlyPayment;
+        }
+
+        public decimal GetMonthlyPayment()
+        {
+            return monthlyPayment;
+        }
     }
 }

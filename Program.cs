@@ -27,18 +27,20 @@ namespace Bank
             {
                 int percentageMoneyToDeposit = random.Next(80, 101);
                 decimal moneyToDeposite = (decimal)percentageMoneyToDeposit * clients[i].GetAvailableMoney() / 100;
+                decimal availableMoneyAfterDeposit = clients[i].GetAvailableMoney() - moneyToDeposite;
+                clients[i].SetAvailableMoney(availableMoneyAfterDeposit);
                 clients[i].OpenDeposite(moneyToDeposite, bank);
 
             }
 
-            for (int i = 0; i < clients.Length; i++)
-            {
-                foreach (var deposite in clients[i].listOfDeposits)
-                {
-                    Console.WriteLine(deposite.GetName());
-                    Console.WriteLine(deposite.GetAvailableMoney());
-                }
-            }
+            //for (int i = 0; i < clients.Length; i++)
+            //{
+            //    foreach (var deposite in clients[i].listOfDeposits)
+            //    {
+            //        Console.WriteLine(deposite.GetName());
+            //        Console.WriteLine(deposite.GetAvailableMoney());
+            //    }
+            //}
 
 
 
@@ -47,6 +49,29 @@ namespace Bank
                 Console.WriteLine(deposite.GetName());
                 Console.WriteLine(deposite.GetAvailableMoney());
             }
+
+            decimal bankReserve = bank.CheckBankReserve();
+            Console.WriteLine("Available money: " + bank.GetBankAvailableMoney());
+            Console.WriteLine("Bank reserve: " + bankReserve);
+
+            for (int i = 0; i < clients.Length; i++)
+            {
+                int period = random.Next(1, 61);
+                int amaount = random.Next(6000, 20000);
+                Credit credit = clients[i].TakeCredit(amaount, period);
+                clients[i].listOfCredits.Add(credit);
+                bool confirmed = bank.ConfirmCredit(clients[i], credit);
+                if (confirmed)
+                {
+                    Console.WriteLine(clients[i].GetName() + " -> You get the money!");
+                }
+                else
+                {
+                    clients[i].listOfCredits.Remove(credit);
+                    Console.WriteLine(clients[i].GetName() + " -> You don't get the money!");
+                }
+            }
+
         }
     }
 }
