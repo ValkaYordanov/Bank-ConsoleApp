@@ -12,6 +12,7 @@ namespace Bank
         private decimal salary;
         public List<Deposit> listOfDeposits = new List<Deposit>();
         public List<Credit> listOfCredits = new List<Credit>();
+        private const int percentageOfSalary = 50;
         public enum CreditTypes { HomeCredit = 1, ConsumerCredit = 2 }
         Random random = new Random();
 
@@ -70,7 +71,7 @@ namespace Bank
         {
             bool enoughMoney = true;
             decimal allMoneyForPayments = 0.0M;
-            decimal percentOfSalary = this.GetSalary() * 50 / 100;
+            decimal percentOfSalary = this.GetSalary() * percentageOfSalary / 100;
 
 
             foreach (var credit in listOfCredits)

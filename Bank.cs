@@ -75,6 +75,7 @@ namespace Bank
                     confirmed = true;
                     client.SetAvailableMoney(client.GetAvailableMoney() + (credit.GetAvailableMoney() * -1));
                     SetBankAvailableMoney(GetBankAvailableMoney() - (credit.GetAvailableMoney() * -1));
+                    listOfBankProducts.Add(credit);
                 }
 
             }
