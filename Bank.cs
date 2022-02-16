@@ -107,7 +107,8 @@ namespace Bank
             {
                 if(product is Deposit)
                 {
-
+                    product.SetAvailableMoney(product.GetAvailableMoney() + product.GetmMnthlyPaidMoney());
+                    SetBankAvailableMoney(GetBankAvailableMoney() - product.GetmMnthlyPaidMoney());
                 }
 
             }

@@ -12,6 +12,17 @@ namespace Bank
 
         protected decimal availableMoney;
 
+        protected decimal monthlyPaidMoney;
+
+        public void SetMonthlyPaidMoney(decimal monthlyPaidMoney)
+        {
+            this.monthlyPaidMoney = monthlyPaidMoney;
+        }
+
+        public decimal GetmMnthlyPaidMoney()
+        {
+            return monthlyPaidMoney;
+        }
         public void SetAvailableMoney(decimal availableMoney)
         {
             this.availableMoney = availableMoney;
