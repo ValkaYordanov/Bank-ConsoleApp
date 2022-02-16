@@ -72,6 +72,15 @@ namespace Bank
                 }
             }
 
+            for (int i = 0; i < clients.Length; i++)
+            {
+                if (clients[i].listOfCredits.Count > 0)
+                {
+
+                    clients[i].PaidInstallment(clients[i].listOfCredits[0]);
+                }
+            }
+
         }
     }
 }

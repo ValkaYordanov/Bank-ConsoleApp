@@ -8,7 +8,7 @@ namespace Bank
     {
         protected override string name { get { return "Home Credit"; } }
         public override double interestRate { get { return 6; } }
-        public override int period { get { return period; } set { } }
+        public override int period { get { return period; } set {  } }
 
     }
 }

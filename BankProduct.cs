@@ -9,6 +9,7 @@ namespace Bank
         protected abstract string name { get; }
         public abstract double interestRate { get;}
         public abstract int period { get; set; }
+
         protected decimal availableMoney;
 
         public void SetAvailableMoney(decimal availableMoney)

@@ -32,6 +32,11 @@ namespace Bank
         {
             return availableMoney;
         }
+
+        public void SetSalary(decimal salary)
+        {
+            this.salary = salary;
+        }
         public decimal GetSalary()
         {
             return salary;
@@ -87,5 +92,21 @@ namespace Bank
             return enoughMoney;
         }
 
+
+        public void PaidInstallment(Credit credit)
+        {
+            decimal salary = GetSalary();
+            SetSalary(salary - credit.GetMonthlyPayment());
+            credit.SetAvailableMoney(credit.GetAvailableMoney() + credit.GetMonthlyPayment());
+
+            if(credit.GetAvailableMoney() == 0)
+            {
+                Console.WriteLine("Congradilations " + GetName() + " you close the credit!");
+            }
+            else
+            {
+                Console.WriteLine(GetName() + " you still have " + Math.Round(credit.GetAvailableMoney()* -1,2) + " to return!");
+            }
+        }
     }
 }

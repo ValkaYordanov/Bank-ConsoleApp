@@ -52,6 +52,10 @@ namespace Bank
             deposite.SetAvailableMoney(moneyToDeposit);
             listOfBankProducts.Add(deposite);
             availableMoney += moneyToDeposit;
+
+            decimal moneyOverInterestRate = moneyToDeposit * (decimal)deposite.interestRate / 100;
+            deposite.SetMonthlyPaidMoney(moneyOverInterestRate / deposite.period);
+
             return deposite;
         }
 
@@ -95,6 +99,18 @@ namespace Bank
             }
 
             return enoughAvailableMoney;
+        }
+
+        public void PayInterestRatesMoneyToAllDeposite()
+        {
+            foreach (var product in listOfBankProducts)
+            {
+                if(product is Deposit)
+                {
+
+                }
+
+            }
         }
 
     }
