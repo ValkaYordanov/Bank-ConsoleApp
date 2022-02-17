@@ -6,11 +6,6 @@ namespace Bank
 {
     public abstract class BankProduct
     {
-        //protected abstract string name { get; }
-        //public abstract double interestRate { get;}
-        //public abstract int period { get; set; }
-
-
         protected string name;
         protected double interestRate;
         protected int period;
