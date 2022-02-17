@@ -6,9 +6,23 @@ namespace Bank
 {
     public class LongDeposit : Deposit
     {
-        protected override string name { get { return "Long Deposit"; } }
-        public override double interestRate { get { return 5; } }
-        public override int period { get { return 12; } set { } }
+        public override void SetPeriod(int period)
+        {
+            this.period = period;
+        }
+        public override int GetPeriod()
+        {
+            return 12;
+        }
 
+        public override string GetName()
+        {
+            return "Long Deposit";
+        }
+
+        public override double GetInterestRate()
+        {
+            return 5;
+        }
     }
 }

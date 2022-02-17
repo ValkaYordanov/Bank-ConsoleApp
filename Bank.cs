@@ -11,6 +11,7 @@ namespace Bank
         public List<BankProduct> listOfBankProducts = new List<BankProduct>();
         private decimal availableMoney;
         private const int reservePercentage = 10;
+        private const int moneyForDecisionOfDepositObject = 5000;
 
         private static Bank instance = null;
         private Bank() { }
@@ -34,9 +35,9 @@ namespace Bank
         {
             return availableMoney;
         }
-        public Deposit ChooseDepositeType(decimal moneyToDeposit)
+        public Deposit ChooseDepositeObject(decimal moneyToDeposit)
         {
-            if (moneyToDeposit > 5000)
+            if (moneyToDeposit > moneyForDecisionOfDepositObject)
             {
                 return new ShortDeposit();
             }
@@ -53,30 +54,39 @@ namespace Bank
             listOfBankProducts.Add(deposite);
             availableMoney += moneyToDeposit;
 
-            decimal moneyOverInterestRate = moneyToDeposit * (decimal)deposite.interestRate / 100;
-            deposite.SetMonthlyPaidMoney(moneyOverInterestRate / deposite.period);
+            decimal moneyOverInterestRate = moneyToDeposit * (decimal)deposite.GetInterestRate() / 100;
+            deposite.SetMonthlyPaidMoney(moneyOverInterestRate / deposite.GetPeriod());
 
             return deposite;
         }
 
-        public decimal CheckBankReserve()
+        public decimal CheckBankReserve() 
         {
-            decimal availableMoney = GetBankAvailableMoney();
-            decimal reserve = availableMoney * reservePercentage / 100;
+            decimal moneyFromDeposit = 0.0M;
+
+            foreach (var product in listOfBankProducts)
+            {
+                if (product is Deposit)
+                {
+                    moneyFromDeposit += product.GetAvailableMoney();
+                }
+
+            }
+            decimal reserve = moneyFromDeposit * reservePercentage / 100;
             return reserve;
         }
 
 
         public bool ConfirmCredit(Client client, Credit credit)
         {
-            bool confirmed = false;
-            bool lessThanFiftyPercentOfTheSalary = client.CheckAllPayments();
+            bool isConfirmed = false;
+            bool lessThanFiftyPercentOfTheSalary = client.CheckIfClientHasEnoughMoneyInSalaryBasedOnAllCreditInstallments(credit.GetmMonthlyPaidMoney()); //
 
             if(lessThanFiftyPercentOfTheSalary)
             {
                 if(CheckAvailability(credit.GetAvailableMoney() * -1))
                 {
-                    confirmed = true;
+                    isConfirmed = true;
                     client.SetAvailableMoney(client.GetAvailableMoney() + (credit.GetAvailableMoney() * -1));
                     SetBankAvailableMoney(GetBankAvailableMoney() - (credit.GetAvailableMoney() * -1));
                     listOfBankProducts.Add(credit);
@@ -84,7 +94,7 @@ namespace Bank
 
             }
 
-            return confirmed;
+            return isConfirmed;
         }
 
         private bool CheckAvailability(decimal amountOfMoneyForCredit)
@@ -107,8 +117,8 @@ namespace Bank
             {
                 if(product is Deposit)
                 {
-                    product.SetAvailableMoney(product.GetAvailableMoney() + product.GetmMnthlyPaidMoney());
-                    SetBankAvailableMoney(GetBankAvailableMoney() - product.GetmMnthlyPaidMoney());
+                    product.SetAvailableMoney(product.GetAvailableMoney() + product.GetmMonthlyPaidMoney());
+                    SetBankAvailableMoney(GetBankAvailableMoney() - product.GetmMonthlyPaidMoney());
                 }
 
             }

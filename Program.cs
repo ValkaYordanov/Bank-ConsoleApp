@@ -33,36 +33,19 @@ namespace Bank
 
             }
 
-            //for (int i = 0; i < clients.Length; i++)
-            //{
-            //    foreach (var deposite in clients[i].listOfDeposits)
-            //    {
-            //        Console.WriteLine(deposite.GetName());
-            //        Console.WriteLine(deposite.GetAvailableMoney());
-            //    }
-            //}
-
-
-
-            foreach (var deposite in bank.listOfBankProducts)
-            {
-                Console.WriteLine(deposite.GetName());
-                Console.WriteLine(deposite.GetAvailableMoney());
-            }
-
-            decimal bankReserve = bank.CheckBankReserve();
-            Console.WriteLine("Available money: " + bank.GetBankAvailableMoney());
-            Console.WriteLine("Bank reserve: " + bankReserve);
+           
+            Console.WriteLine("Available money in the bank: " + bank.GetBankAvailableMoney());
+            Console.WriteLine("Bank reserve: " + bank.CheckBankReserve());
 
             for (int i = 0; i < clients.Length; i++)
             {
                 int period = random.Next(1, 61);
                 int amaount = random.Next(6000, 20000);
                 Credit credit = clients[i].TakeCredit(amaount, period);
-                clients[i].listOfCredits.Add(credit);
-                bool confirmed = bank.ConfirmCredit(clients[i], credit);
-                if (confirmed)
+                bool isConfirmed = bank.ConfirmCredit(clients[i], credit);
+                if (isConfirmed)
                 {
+                    clients[i].listOfCredits.Add(credit);
                     Console.WriteLine(clients[i].GetName() + " -> You get the money!");
                 }
                 else
@@ -70,17 +53,35 @@ namespace Bank
                     clients[i].listOfCredits.Remove(credit);
                     Console.WriteLine(clients[i].GetName() + " -> You don't get the money!");
                 }
+                Console.WriteLine();
             }
 
             for (int i = 0; i < clients.Length; i++)
             {
-                if (clients[i].listOfCredits.Count > 0)
-                {
+                decimal allCreditsMoney = clients[i].CalculateAllMoneyForAllCredits();
+                decimal allDepositMoney = clients[i].CalculateAllMoneyForAllDeposits();
 
-                    clients[i].PaidInstallment(clients[i].listOfCredits[0]);
-                }
+
+                Console.WriteLine(clients[i].GetName());
+                Console.WriteLine("Has available money: " + clients[i].GetAvailableMoney());
+                Console.WriteLine("Has salary: " + clients[i].GetSalary());
+                Console.WriteLine("Has " + clients[i].listOfCredits.Count + " number of credits for " + allCreditsMoney + "leva.");
+                Console.WriteLine("Has " + clients[i].listOfDeposits.Count + " number of deposits for " + allDepositMoney + "leva.");
+                Console.WriteLine();
             }
 
+            foreach (var product in bank.listOfBankProducts)
+            {
+                Console.WriteLine(product.GetName());
+                Console.WriteLine("Period: " + product.GetPeriod());
+                Console.WriteLine("Interest rate: " + product.GetInterestRate());
+                Console.WriteLine("Available money: " + product.GetAvailableMoney());
+                Console.WriteLine();
+            }
+
+          
+            Console.WriteLine("Available money in the bank: " + bank.GetBankAvailableMoney());
+            Console.WriteLine("Bank reserve: " + bank.CheckBankReserve());
         }
     }
 }

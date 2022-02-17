@@ -12,7 +12,7 @@ namespace Bank
         private decimal salary;
         public List<Deposit> listOfDeposits = new List<Deposit>();
         public List<Credit> listOfCredits = new List<Credit>();
-        private const int percentageOfSalary = 50;
+        private const int percentageOfSalaryToCheckIfClientHasEnoughMoneyToPayAlsoNewCredit = 50; 
         public enum CreditTypes { HomeCredit = 1, ConsumerCredit = 2 }
         Random random = new Random();
 
@@ -47,7 +47,7 @@ namespace Bank
         }
         public void OpenDeposite(decimal moneyToDeposite, Bank bank)
         {
-            var typeOfDeposit = bank.ChooseDepositeType(moneyToDeposite);
+            var typeOfDeposit = bank.ChooseDepositeObject(moneyToDeposite);
             listOfDeposits.Add(bank.CreateDeposit(moneyToDeposite, typeOfDeposit));
         }
 
@@ -63,8 +63,8 @@ namespace Bank
             {
                 credit = new ConsumerCredit();
             }
-            credit.period= period;
-            decimal interestMoney = amount * (decimal)credit.interestRate / 100;
+            credit.SetPeriod(period);
+            decimal interestMoney = amount * (decimal)credit.GetInterestRate() / 100;
             decimal moneyToReturnForCredit = amount + interestMoney;
             credit.SetAvailableMoney(moneyToReturnForCredit * -1);
             credit.SetMonthlyPayment(moneyToReturnForCredit / period);
@@ -72,11 +72,11 @@ namespace Bank
 
         }
 
-        public bool CheckAllPayments()
+        public bool CheckIfClientHasEnoughMoneyInSalaryBasedOnAllCreditInstallments(decimal newMonthlyPaymentOfTheDesiredCredit)
         {
-            bool enoughMoney = true;
+            bool hasEnoughMoney = true;
             decimal allMoneyForPayments = 0.0M;
-            decimal percentOfSalary = this.GetSalary() * percentageOfSalary / 100;
+            decimal percentOfSalary = this.GetSalary() * percentageOfSalaryToCheckIfClientHasEnoughMoneyToPayAlsoNewCredit / 100;
 
 
             foreach (var credit in listOfCredits)
@@ -84,14 +84,15 @@ namespace Bank
                 allMoneyForPayments += credit.GetMonthlyPayment();
             }
 
-            if(allMoneyForPayments > percentOfSalary)
+            allMoneyForPayments = allMoneyForPayments + newMonthlyPaymentOfTheDesiredCredit;
+
+            if (allMoneyForPayments > percentOfSalary)
             {
-                enoughMoney = false;
+                hasEnoughMoney = false;
             }
 
-            return enoughMoney;
+            return hasEnoughMoney;
         }
-
 
         public void PaidInstallment(Credit credit)
         {
@@ -99,14 +100,37 @@ namespace Bank
             SetSalary(salary - credit.GetMonthlyPayment());
             credit.SetAvailableMoney(credit.GetAvailableMoney() + credit.GetMonthlyPayment());
 
-            if(credit.GetAvailableMoney() == 0)
+            if (credit.GetAvailableMoney() == 0)
             {
                 Console.WriteLine("Congradilations " + GetName() + " you close the credit!");
             }
             else
             {
-                Console.WriteLine(GetName() + " you still have " + Math.Round(credit.GetAvailableMoney()* -1,2) + " to return!");
+                Console.WriteLine(GetName() + " you still have " + Math.Round(credit.GetAvailableMoney() * -1, 2) + " to return!");
             }
         }
+        public decimal CalculateAllMoneyForAllCredits()
+        {
+            decimal allMoney = 0.0M;
+            foreach (var credit in listOfCredits)
+            {
+                allMoney += credit.GetAvailableMoney() * -1;
+            }
+
+            return allMoney;
+        }
+
+        public decimal CalculateAllMoneyForAllDeposits()
+        {
+            decimal allMoney = 0.0M;
+            foreach (var deposit in listOfDeposits)
+            {
+                allMoney += deposit.GetAvailableMoney();
+            }
+
+            return allMoney;
+        }
+
+
     }
 }

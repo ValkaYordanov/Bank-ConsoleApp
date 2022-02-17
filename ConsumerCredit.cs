@@ -6,8 +6,24 @@ namespace Bank
 {
     public class ConsumerCredit : Credit
     {
-        protected override string name { get { return "Consumer Credit"; } }
-        public override double interestRate { get { return 10; } }
-        public override int period { get { return period; } set {  } }
+        public override void SetPeriod(int period)
+        {
+            this.period = period;
+        }
+        public override int GetPeriod()
+        {
+            return period;
+        }
+
+        public override string GetName()
+        {
+            return "Consumer Credit";
+        }
+
+        public override double GetInterestRate()
+        {
+            return 10;
+        }
+
     }
 }
